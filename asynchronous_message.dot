@@ -1,0 +1,78 @@
+digraph show {
+    /*
+    Author: secwang
+    Created: 2016-07-25 16:40
+    */
+
+    // General layout for the graph
+    // rankdir=LR; // Direction of the graph Left to Right
+    sep="+25,25";
+    splines=true;
+    overlap=scalexy;
+    nodesep=0.4;
+    ranksep=0.5;
+
+     node [style="filled",color=black,shape=box,fillcolor=white]; // Defines the default layout of the nodes
+     graph [style=filled, splines=line]; // Fills the subgraphs and defines the layout of the connections
+     //edge [arrowhead=none]
+     rank = same; // Makes sure that nodes are properly aligned even without a connection
+
+    begin [label = "声明事务"  ];
+
+    local_transaction [label = "本地事务"];
+
+    send_msg [label = "发送事务消息"];
+
+    commit [label = "数据库提交"];
+    msg_commit [label = "事务消息提交"];
+
+    rollback [label = "数据库回滚"];
+    msg_rollback [label = "消息回滚(即不发送)"];
+
+    subgraph cluster0 {
+      local_transaction -> send_msg
+    }
+
+    subgraph cluster1{
+      rollback -> msg_rollback;
+    }
+
+    subgraph cluster2{
+      commit -> msg_commit;
+    }
+
+    begin  ->  local_transaction;
+
+    send_msg -> commit
+
+    send_msg -> rollback
+
+
+    broker [label = "broker",pos = "1,1!"]
+    consumer [label = "消息消费端"]
+
+    consume_success [label = "consume_success"]
+    reconsume_later [ label = "recomsume_later"]
+
+   broker -> consumer
+
+   subgraph cluster3{
+      consumer -> consume_success
+      consumer -> reconsume_later
+   }
+
+   msg_commit ->  broker
+
+   reconsume_later -> broker
+   send_msg -> broker
+   msg_rollback -> broker
+
+   transaction_state [label = "查询事务状态"]
+   broker_update_msg [label = "更新消息状态"]
+   broker -> transaction_state
+   transaction_state -> broker_update_msg
+   broker_update_msg  -> broker
+
+
+
+}
