@@ -1,0 +1,41 @@
+digraph show {
+    /*
+    Author: secwang
+    Created: 2016-07-25 16:40
+    */
+
+    // General layout for the graph
+    // rankdir=LR; // Direction of the graph Left to Right
+    sep="+25,25";
+    splines=true;
+    overlap=scalexy;
+    nodesep=0.4;
+    ranksep=0.5;
+
+     node [style="filled",color=black,shape=box,fillcolor=white]; // Defines the default layout of the nodes
+     graph [style=filled, splines=line]; // Fills the subgraphs and defines the layout of the connections
+     //edge [arrowhead=none]
+     rank = same; // Makes sure that nodes are properly aligned even without a connection
+     text [label="订单场景创建后，\n订单不必回归，\n资源需要释放"]
+
+     order [label="start order flow"]
+
+
+     lock [label="lock resource"]
+
+     msg [label="send_timed_msg"]
+
+     pay [label="payService"]
+
+     broker [label="broker"]
+
+     unlock [label="unlockService"]
+
+     order -> lock -> msg -> payService
+
+     msg -> broker
+
+     broker -> unlock[label="15min ,sync with payService timeout"]
+
+
+}

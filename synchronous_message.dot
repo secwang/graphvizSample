@@ -1,0 +1,44 @@
+digraph show {
+    /*
+    Author: secwang
+    Created: 2016-07-25 16:40
+    */
+
+    // General layout for the graph
+    // rankdir=LR; // Direction of the graph Left to Right
+    sep="+25,25";
+    splines=true;
+    overlap=scalexy;
+    nodesep=0.4;
+    ranksep=0.5;
+
+     node [style="filled",color=black,shape=box,fillcolor=white]; // Defines the default layout of the nodes
+     graph [style=filled, splines=line]; // Fills the subgraphs and defines the layout of the connections
+     //edge [arrowhead=none]
+     rank = same; // Makes sure that nodes are properly aligned even without a connection
+
+     transaction [label="事务内容"]
+     msg [lable="同步消息"]
+     subgraph cluster0 {
+     transaction -> msg
+     }
+
+     broker [label="broker"]
+
+     msg -> broker[label="阻塞调用"]
+
+
+     broker [label="broker"]
+     scf [label="scf"]
+
+     subgraph cluster1 {
+       consumer -> scf
+     }
+
+     broker -> consumer[label="retry"]
+     result_set [label = "resultSet"]
+     error [label = "exception"]
+     scf -> result_set
+     scf -> error
+
+}
