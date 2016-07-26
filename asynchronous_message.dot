@@ -53,12 +53,16 @@ digraph show {
 
     consume_success [label = "consume_success"]
     reconsume_later [ label = "recomsume_later"]
+    ttl_timeout [ label = "ttl_timeout|回调补偿方式scf直到ack"]
+
+  // 一方面是补偿函数，远程补偿，另一方面实际上是，ttl 消息消费补偿
 
    broker -> consumer
 
    subgraph cluster3{
       consumer -> consume_success
       consumer -> reconsume_later
+      consumer -> ttl_timeout
    }
 
    msg_commit ->  broker
