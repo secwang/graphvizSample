@@ -5,7 +5,7 @@ digraph show {
     */
 
     // General layout for the graph
-    // rankdir=LR; // Direction of the graph Left to Right
+     rankdir=LR; // Direction of the graph Left to Right
     sep="+25,25";
     splines=true;
     overlap=scalexy;
